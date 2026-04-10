@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "project.html",
+    "href": "project.html",
+    "title": "Projects",
+    "section": "",
+    "text": "This page highlights a few projects and areas of applied coursework that reflect the kind of work I enjoy most: using data to support business decisions, understand customer behavior, and turn analysis into clear recommendations."
+  },
+  {
+    "objectID": "project.html#upgrade-targeting-and-profit-optimization",
+    "href": "project.html#upgrade-targeting-and-profit-optimization",
+    "title": "Projects",
+    "section": "Upgrade Targeting and Profit Optimization",
+    "text": "Upgrade Targeting and Profit Optimization\nOne project I worked on focused on deciding which customers should receive upgrade outreach for Intuit QuickBooks. Using behavioral and product usage data from a large customer dataset, I built and compared several predictive models, then evaluated them under the same business assumptions rather than treating model accuracy as the only goal.\nWhat I found most interesting about this project was the decision layer. Instead of stopping at prediction, I used an expected-profit framework to decide where the outreach threshold should be set and how the final recommendations would affect business value. It was a good example of how analytics becomes more useful when it is tied directly to a real decision."
+  },
+  {
+    "objectID": "project.html#customer-churn-prediction",
+    "href": "project.html#customer-churn-prediction",
+    "title": "Projects",
+    "section": "Customer Churn Prediction",
+    "text": "Customer Churn Prediction\nIn another project, I built a churn prediction workflow to better understand which customers were at higher risk of leaving and what factors seemed to matter most. The work involved feature setup, model validation, and summarizing the most important drivers in a way that could support retention decisions.\nThis project helped me think more carefully about the difference between building a model and making the results useful. The most important part was not just identifying risk, but translating that into an action-focused readout that could guide next steps."
+  },
+  {
+    "objectID": "project.html#incremental-profit-optimization-with-uplift-modeling",
+    "href": "project.html#incremental-profit-optimization-with-uplift-modeling",
+    "title": "Projects",
+    "section": "Incremental Profit Optimization with Uplift Modeling",
+    "text": "Incremental Profit Optimization with Uplift Modeling\nI also worked on an uplift modeling project using randomized treatment data. The goal was not simply to predict who would respond, but to estimate who was more likely to respond because of the outreach itself.\nThat distinction changed the way I thought about targeting. Instead of focusing only on raw propensity, I looked at incremental impact and then translated the results into a profit-based targeting rule. This project made the logic of experimentation and causal thinking much more concrete for me, especially in marketing and customer decision contexts."
+  },
+  {
+    "objectID": "project.html#pricing-and-conjoint-analysis",
+    "href": "project.html#pricing-and-conjoint-analysis",
+    "title": "Projects",
+    "section": "Pricing and Conjoint Analysis",
+    "text": "Pricing and Conjoint Analysis\nThrough coursework in pricing and conjoint analysis, I worked on problems involving willingness to pay, product design tradeoffs, and demand and profit implications under different market scenarios. This included using multinomial logit models to evaluate how customers respond to product features and how those preferences can inform pricing and design decisions.\nWhat I liked about this area was how directly it connects customer preferences to business choices. It brought together modeling, interpretation, and strategy in a way that felt especially practical."
+  },
+  {
+    "objectID": "project.html#applied-marketing-and-product-analytics",
+    "href": "project.html#applied-marketing-and-product-analytics",
+    "title": "Projects",
+    "section": "Applied Marketing and Product Analytics",
+    "text": "Applied Marketing and Product Analytics\nBeyond coursework, I have also worked on applied analytics in startup and agency settings. That work has included KPI reporting, funnel analysis, campaign and creator performance review, and turning user or market signals into clearer recommendations for product and marketing decisions.\nI see this work as a continuation of the same themes that show up in my projects: using analysis to make messy business questions more structured, and then communicating the answer in a way that is actually useful to a team.\nMore coming soon."
+  },
+  {
+    "objectID": "resume.html",
+    "href": "resume.html",
+    "title": "My Resume",
+    "section": "",
+    "text": "Download PDF file."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Jiachen Xu",
+    "section": "",
+    "text": "Hi! I’m Jiachen Xu.\nI am currently studying business analytics and enjoy learning how data can support marketing, pricing, and product decisions.\nThis website shares a little about me, my resume, and selected projects."
+  }
+]

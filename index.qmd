@@ -1,0 +1,17 @@
+---
+title: "Jiachen Xu"
+image: "files/profile_pic.jpg"
+about:
+  template: jolla
+  links:
+    - icon: envelope
+      href: mailto:jiachenxu1212@gmail.com
+    - icon: linkedin
+      href: https://www.linkedin.com/in/jiachen-xu-abby12
+---
+
+Hi! I'm Jiachen Xu.
+
+I am currently studying business analytics and enjoy learning how data can support marketing, pricing, and product decisions.
+
+This website shares a little about me, my resume, and selected projects.

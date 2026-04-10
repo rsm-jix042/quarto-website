@@ -1,0 +1,37 @@
+---
+title: "Projects"
+---
+
+This page highlights a few projects and areas of applied coursework that reflect the kind of work I enjoy most: using data to support business decisions, understand customer behavior, and turn analysis into clear recommendations.
+
+## Upgrade Targeting and Profit Optimization
+
+One project I worked on focused on deciding which customers should receive upgrade outreach for Intuit QuickBooks. Using behavioral and product usage data from a large customer dataset, I built and compared several predictive models, then evaluated them under the same business assumptions rather than treating model accuracy as the only goal.
+
+What I found most interesting about this project was the decision layer. Instead of stopping at prediction, I used an expected-profit framework to decide where the outreach threshold should be set and how the final recommendations would affect business value. It was a good example of how analytics becomes more useful when it is tied directly to a real decision.
+
+## Customer Churn Prediction
+
+In another project, I built a churn prediction workflow to better understand which customers were at higher risk of leaving and what factors seemed to matter most. The work involved feature setup, model validation, and summarizing the most important drivers in a way that could support retention decisions.
+
+This project helped me think more carefully about the difference between building a model and making the results useful. The most important part was not just identifying risk, but translating that into an action-focused readout that could guide next steps.
+
+## Incremental Profit Optimization with Uplift Modeling
+
+I also worked on an uplift modeling project using randomized treatment data. The goal was not simply to predict who would respond, but to estimate who was more likely to respond because of the outreach itself.
+
+That distinction changed the way I thought about targeting. Instead of focusing only on raw propensity, I looked at incremental impact and then translated the results into a profit-based targeting rule. This project made the logic of experimentation and causal thinking much more concrete for me, especially in marketing and customer decision contexts.
+
+## Pricing and Conjoint Analysis
+
+Through coursework in pricing and conjoint analysis, I worked on problems involving willingness to pay, product design tradeoffs, and demand and profit implications under different market scenarios. This included using multinomial logit models to evaluate how customers respond to product features and how those preferences can inform pricing and design decisions.
+
+What I liked about this area was how directly it connects customer preferences to business choices. It brought together modeling, interpretation, and strategy in a way that felt especially practical.
+
+## Applied Marketing and Product Analytics
+
+Beyond coursework, I have also worked on applied analytics in startup and agency settings. That work has included KPI reporting, funnel analysis, campaign and creator performance review, and turning user or market signals into clearer recommendations for product and marketing decisions.
+
+I see this work as a continuation of the same themes that show up in my projects: using analysis to make messy business questions more structured, and then communicating the answer in a way that is actually useful to a team.
+
+More coming soon.

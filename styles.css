@@ -1,0 +1,83 @@
+body {
+  font-size: 18px;
+  line-height: 1.75;
+  color: #334155;
+  background: linear-gradient(to bottom, #fffafc 0%, #f8fbff 45%, #ffffff 100%);
+}
+
+.navbar {
+  background-color: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid #e9d5e6;
+  backdrop-filter: blur(8px);
+}
+
+.navbar-title,
+.menu-text {
+  font-weight: 600;
+  color: #334155 !important;
+}
+
+.navbar-title:hover,
+.menu-text:hover {
+  color: #7c3f58 !important;
+}
+
+h1, h2, h3 {
+  color: #7c3f58;
+  font-weight: 700;
+}
+
+p, li {
+  color: #475569;
+}
+
+a {
+  color: #4f7cac;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #7c3f58;
+  text-decoration: underline;
+}
+
+main.content {
+  background-color: rgba(255, 255, 255, 0.88);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(148, 163, 184, 0.12);
+}
+
+.about-links .about-link {
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  border: 1px solid #dbeafe;
+  background-color: #ffffff;
+  color: #4f7cac;
+  transition: all 0.2s ease;
+}
+
+.about-links .about-link:hover {
+  background-color: #fdf2f8;
+  border-color: #f9c5d5;
+  color: #7c3f58;
+  text-decoration: none;
+}
+
+.quarto-about-jolla .about-entity {
+  max-width: 260px;
+}
+
+.quarto-about-jolla .about-contents {
+  padding-top: 24px;
+}
+
+img {
+  border-radius: 18px;
+}
+
+.sidebar nav[role="doc-toc"] {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 14px;
+  padding: 1rem;
+}

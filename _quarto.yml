@@ -1,0 +1,20 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Jiachen Xu"
+  navbar:
+    left:
+      - href: index.qmd
+        text: About
+      - href: resume.qmd
+        text: Resume
+      - href: project.qmd
+        text: Projects
+
+format:
+  html:
+    theme: minty
+    css: styles.css
+    toc: true
