@@ -122,9 +122,9 @@ ci_lower = theta_hat - 1.96 * boot_se
 ci_upper = theta_hat + 1.96 * boot_se
 ```
 
-The bootstrapped standard error is **`{python} round(boot_se, 4)`**, while the analytical standard error is **`{python} round(analytical_se, 4)`**. These two values are very close, which is reassuring because it suggests that the resampling approach and the formula-based approach are telling a similar story about the precision of the estimator.
+The bootstrapped standard error is **`{python} f"{float(boot_se):.4f}"`**, while the analytical standard error is **`{python} f"{float(analytical_se):.4f}"`**. These two values are very close, which is reassuring because it suggests that the resampling approach and the formula-based approach are telling a similar story about the precision of the estimator.
 
-Using the bootstrapped standard error, I construct a 95% confidence interval for $\theta$ of **[`{python} round(ci_lower, 4)`, `{python} round(ci_upper, 4)`]**. This interval gives a range of plausible values for the true difference in sign-up rates between CTA A and CTA B. Because the interval lies mostly above zero, the evidence is consistent with CTA A producing a higher sign-up rate than CTA B.
+Using the bootstrapped standard error, I construct a 95% confidence interval for $\theta$ of **[`{python} f"{float(ci_lower):.4f}"`, `{python} f"{float(ci_upper):.4f}"`]**. This interval gives a range of plausible values for the true difference in sign-up rates between CTA A and CTA B. Because the interval includes zero, the data are also consistent with no true difference between the two CTAs at the 95% confidence level. At the same time, most of the interval lies above zero, so the point estimate still suggests that CTA A may perform better than CTA B.
 
 ## The Central Limit Theorem
 
@@ -193,7 +193,7 @@ z_stat = theta_hat / analytical_se
 p_value = 2 * (1 - stats.norm.cdf(abs(z_stat)))
 ```
 
-The test statistic is **`{python} round(z_stat, 4)`**, and the corresponding two-sided p-value is **`{python} round(p_value, 4)`**. The test statistic measures how many standard errors the observed estimate is away from the null value of zero. A small p-value indicates that such a result would be unlikely if the two CTAs truly had the same sign-up rate. In this case, the evidence supports rejecting the null and concluding that the two CTAs differ in performance.
+The test statistic is **`{python} f"{float(z_stat):.4f}"`**, and the corresponding two-sided p-value is **`{python} f"{float(p_value):.4f}"`**. The test statistic measures how many standard errors the observed estimate is away from the null value of zero. Because the p-value is greater than 0.05, I do not reject the null hypothesis at the 5% significance level. Although the estimated difference is positive, the evidence is not strong enough to conclude that the two CTAs differ in performance in this simulated sample.
 
 ## The T-Test as a Regression
 
@@ -227,7 +227,7 @@ t_beta_1 = model.tvalues["D"]
 p_beta_1 = model.pvalues["D"]
 ```
 
-The estimated treatment coefficient is **`{python} round(beta_1, 4)`**, with standard error **`{python} round(se_beta_1, 4)`**, t-statistic **`{python} round(t_beta_1, 4)`**, and p-value **`{python} round(p_beta_1, 4)`**. These values are very close to the earlier two-sample results, which is exactly what we should expect. This equivalence matters because it shows that the same regression tools used throughout applied statistics can also analyze simple A/B tests, while also extending naturally to richer experimental designs.
+The estimated treatment coefficient is **`{python} f"{float(beta_1):.4f}"`**, with standard error **`{python} f"{float(se_beta_1):.4f}"`**, t-statistic **`{python} f"{float(t_beta_1):.4f}"`**, and p-value **`{python} f"{float(p_beta_1):.4f}"`**. These values are very close to the earlier two-sample results, which is exactly what we should expect. This equivalence matters because it shows that the same regression tools used throughout applied statistics can also analyze simple A/B tests, while also extending naturally to richer experimental designs.
 
 ## The Problem with Peeking
 
