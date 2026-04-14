@@ -19,5 +19,11 @@
   },
   "project.qmd": {
     "project.html": "f6eb635e"
+  },
+  "hw1_questions.qmd": {
+    "hw1_questions.html": "f6ebe0f2"
+  },
+  "projects/ab-testing/index.qmd": {
+    "index.html": "6ad0f014"
   }
 }
