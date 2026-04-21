@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Jiachem Xu">
+<meta name="author" content="Jiachen Xu">
 <meta name="dcterms.date" content="2026-04-21">
 
 <title>Replication of Card and Krueger (1994) – Jiachen Xu</title>
@@ -124,8 +124,8 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#main-analysis" id="toc-main-analysis" class="nav-link" data-scroll-target="#main-analysis">Main Analysis</a></li>
-  <li><a href="#something-additional" id="toc-something-additional" class="nav-link" data-scroll-target="#something-additional">Something Additional</a></li>
+  <li><a href="#replication-results" id="toc-replication-results" class="nav-link" data-scroll-target="#replication-results">Replication Results</a></li>
+  <li><a href="#why-diff-in-diff-supports-a-causal-interpretation" id="toc-why-diff-in-diff-supports-a-causal-interpretation" class="nav-link" data-scroll-target="#why-diff-in-diff-supports-a-causal-interpretation">Why Diff-in-Diff Supports a Causal Interpretation</a></li>
   </ul>
 </nav>
     </div>
@@ -145,7 +145,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Jiachem Xu </p>
+             <p>Jiachen Xu </p>
           </div>
   </div>
     
@@ -170,10 +170,10 @@ ul.task-list li input[type="checkbox"] {
 <p>This paper is important because it challenged the standard prediction that a higher minimum wage must reduce employment. Using survey data collected from fast-food restaurants before and after the policy change, the authors compare employment outcomes in New Jersey and Pennsylvania and use a difference-in-differences framework to estimate the effect of the law.</p>
 <p>My replication focuses on three pieces of the paper. First, I reproduce summary statistics similar to Table 2. Second, I replicate the main employment comparison behind Table 3. Third, I estimate the simplest reduced-form regression from Table 4, column (i). Together, these results capture the paper’s main empirical finding and show how the diff-in-diff design supports a causal interpretation.</p>
 </section>
-<section id="main-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="main-analysis">Main Analysis</h2>
-<div id="21e876b9" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display" data-execution_count="4">
+<section id="replication-results" class="level2">
+<h2 class="anchored" data-anchor-id="replication-results">Replication Results</h2>
+<div id="657ea460" class="cell" data-execution_count="1">
+<div class="cell-output cell-output-display" data-execution_count="1">
 <div>
 
 
@@ -215,8 +215,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <p>The table above reports mean employment, starting wages, and meal prices for Pennsylvania and New Jersey stores in the two survey waves. This reproduces the basic structure of Table 2 and helps show how outcomes changed across states before and after the New Jersey minimum wage increase.</p>
-<div id="1c40f74f" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div id="86972616" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
 
@@ -255,8 +255,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <p>The table above recreates the core idea of Table 3. It compares average full-time-equivalent employment in Pennsylvania and New Jersey before and after the policy change, and then reports the change in each state.</p>
-<div id="0d7138e4" class="cell" data-execution_count="3">
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div id="f64308a1" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="3">
 <div>
 
 
@@ -286,8 +286,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <p>The regression above reproduces the simplest reduced-form specification from Table 4, where the change in employment is regressed on a New Jersey indicator. In this setup, the coefficient on the New Jersey dummy is the difference-in-differences style estimate of how employment changed in New Jersey relative to Pennsylvania.</p>
 </section>
-<section id="something-additional" class="level2">
-<h2 class="anchored" data-anchor-id="something-additional">Something Additional</h2>
+<section id="why-diff-in-diff-supports-a-causal-interpretation" class="level2">
+<h2 class="anchored" data-anchor-id="why-diff-in-diff-supports-a-causal-interpretation">Why Diff-in-Diff Supports a Causal Interpretation</h2>
 <p>One useful way to understand the Card and Krueger design is to view it as a simple difference-in-differences setup. Pennsylvania stores serve as a comparison group, while New Jersey stores are the treated group because they were exposed to the higher minimum wage. The key identifying idea is that, absent the policy change, employment trends in New Jersey would have moved similarly to those in Pennsylvania. Under that assumption, the difference in the before-after changes across the two states can be interpreted causally.</p>
 <p>The simple comparison in the tables above already shows why this design matters. A raw post-treatment comparison between New Jersey and Pennsylvania would mix policy effects with any pre-existing differences between the two states. By instead comparing changes over time, the analysis differences out permanent baseline gaps across locations. That is the central logic of diff-in-diff and the main reason the paper can make a causal argument rather than a purely descriptive one.</p>
 
