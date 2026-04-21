@@ -12,6 +12,9 @@ website:
         text: Resume
       - href: projects.qmd
         text: Projects
+      - href: hw2/hw2_questions.qmd
+        text: HW2
+
 
 format:
   html:

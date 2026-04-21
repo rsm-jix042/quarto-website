@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Jiachen Xu">
-<meta name="dcterms.date" content="2026-04-14">
+<meta name="dcterms.date" content="2026-04-21">
 
 <title>A/B Testing a Call to Action – Jiachen Xu</title>
 <style>
@@ -168,6 +168,10 @@ window.Quarto = {
     <a class="nav-link" href="../../projects.html"> 
 <span class="menu-text">Projects</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../hw2/hw2_questions.html"> 
+<span class="menu-text">HW2</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -219,7 +223,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 14, 2026</p>
+      <p class="date">April 21, 2026</p>
     </div>
   </div>
   
@@ -258,7 +262,7 @@ window.Quarto = {
 \theta = \pi_A - \pi_B = 0.04
 \]</span></p>
 <p>I now simulate 1,000 visitors in each group and record whether each visitor signs up (1) or does not sign up (0).</p>
-<div id="c9e7ef57" class="cell" data-execution_count="1">
+<div id="aacb4f72" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -286,7 +290,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="the-law-of-large-numbers">The Law of Large Numbers</h2>
 <p>The Law of Large Numbers tells us that as the sample size grows, the sample mean converges to the population mean. In this setting, that idea matters because our estimator is the difference in sample means, <span class="math inline">\(\hat\theta = \bar{X}_A - \bar{X}_B\)</span>. If the two groups are large enough, we should expect this estimator to get closer to the true treatment effect <span class="math inline">\(\theta\)</span>.</p>
 <p>To illustrate this, I compute the element-wise differences between the simulated CTA A and CTA B outcomes and then calculate the cumulative average of those differences. Early on, the running mean should be noisy because each new observation has a large effect. As more observations are added, the running mean should settle down and move closer to the true difference of 0.04.</p>
-<div id="3a31085f" class="cell" data-execution_count="2">
+<div id="bcebbd33" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>diff_vec <span class="op">=</span> x_A <span class="op">-</span> x_B</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cum_avg <span class="op">=</span> np.cumsum(diff_vec) <span class="op">/</span> np.arange(<span class="dv">1</span>, n <span class="op">+</span> <span class="dv">1</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -324,7 +328,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="the-central-limit-theorem">The Central Limit Theorem</h2>
 <p>The Central Limit Theorem says that even when the underlying data are not Normally distributed, the sampling distribution of the sample mean becomes approximately Normal as the sample size grows. In this example, each individual observation is Bernoulli, so it takes only the values 0 and 1. Even so, the difference in sample means, <span class="math inline">\(\hat\theta = \bar{X}_A - \bar{X}_B\)</span>, should become more bell-shaped across repeated samples when the group sizes are large enough.</p>
 <p>To illustrate this, I repeatedly simulate experiments at four different sample sizes: <span class="math inline">\(n \in \{25, 50, 100, 500\}\)</span>. For each sample size, I generate 1,000 values of <span class="math inline">\(\hat\theta\)</span> and plot their distribution.</p>
-<div id="d115c059" class="cell" data-execution_count="4">
+<div id="26649c80" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sample_sizes <span class="op">=</span> [<span class="dv">25</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>]</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>n_sim <span class="op">=</span> <span class="dv">1000</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -392,7 +396,7 @@ Y_i = \beta_0 + \beta_1 D_i + \varepsilon_i
 <p>A common temptation in A/B testing is to look at the results repeatedly as data arrive and stop the experiment as soon as one version appears to win. This is often called <em>peeking</em>. Under classical frequentist statistics, that is a problem because each hypothesis test creates another opportunity for a false positive.</p>
 <p>A single test at the <span class="math inline">\(\alpha = 0.05\)</span> level has a 5% probability of rejecting the null when the null is actually true. But if I test the same experiment over and over as more observations accumulate, the overall probability of seeing at least one significant result becomes larger than 5%. In other words, repeated peeking inflates the Type I error rate.</p>
 <p>To demonstrate this, I simulate a setting where the null hypothesis is true: both CTAs have the same sign-up probability, so <span class="math inline">\(\pi_A = \pi_B = 0.20\)</span>. In each simulated experiment, I generate 1,000 observations per group and check the z-test after every 100 observations per group. I then record whether at least one of those ten peeks produces a p-value below 0.05.</p>
-<div id="0494f9ad" class="cell" data-execution_count="7">
+<div id="2ed4cdd8" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>pi_null <span class="op">=</span> <span class="fl">0.20</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>n_total <span class="op">=</span> <span class="dv">1000</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>peek_points <span class="op">=</span> np.arange(<span class="dv">100</span>, <span class="dv">1001</span>, <span class="dv">100</span>)</span>
