@@ -1,7 +1,7 @@
 ---
 title: "Replication of Card and Krueger (1994)"
 subtitle: "Minimum Wages and Employment in New Jersey and Pennsylvania"
-author: "Jiachem Xu"
+author: "Jiachen Xu"
 date: today
 ---
 
