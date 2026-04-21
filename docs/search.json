@@ -46,7 +46,7 @@
     "href": "projects.html",
     "title": "Projects",
     "section": "",
-    "text": "A/B Testing a Call to Action\n\n\n\n\n\n\nJiachen Xu\n\n\nApr 14, 2026\n\n\n\n\n\n\n\n\n\n\n\nComing Soon\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "A/B Testing a Call to Action\n\n\n\n\n\n\nJiachen Xu\n\n\nApr 21, 2026\n\n\n\n\n\n\n\n\n\n\n\nComing Soon\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "projects/ab-testing/index.html",
@@ -208,5 +208,40 @@
     "title": "Jiachen Xu",
     "section": "",
     "text": "Hi! I’m Jiachen Xu.\nI am currently studying business analytics and enjoy learning how data can support marketing, pricing, and product decisions.\nThis website shares a little about me, my resume, and selected projects."
+  },
+  {
+    "objectID": "hw2/hw2_questions.html",
+    "href": "hw2/hw2_questions.html",
+    "title": "Replication of Card and Krueger (1994)",
+    "section": "",
+    "text": "In this post, I replicate part of Card and Krueger’s classic 1994 paper, Minimum Wages and Employment: A Case Study of the Fast-Food Industry in New Jersey and Pennsylvania. The paper studies whether New Jersey’s increase in the minimum wage reduced employment in fast-food restaurants relative to nearby stores in Pennsylvania.\nThis paper is important because it challenged the standard prediction that a higher minimum wage must reduce employment. Using survey data collected from fast-food restaurants before and after the policy change, the authors compare employment outcomes in New Jersey and Pennsylvania and use a difference-in-differences framework to estimate the effect of the law.\nMy replication focuses on three pieces of the paper. First, I reproduce summary statistics similar to Table 2. Second, I replicate the main employment comparison behind Table 3. Third, I estimate the simplest reduced-form regression from Table 4, column (i). Together, these results capture the paper’s main empirical finding and show how the diff-in-diff design supports a causal interpretation."
+  },
+  {
+    "objectID": "hw2/hw2_questions.html#introduction",
+    "href": "hw2/hw2_questions.html#introduction",
+    "title": "Replication of Card and Krueger (1994)",
+    "section": "",
+    "text": "In this post, I replicate part of Card and Krueger’s classic 1994 paper, Minimum Wages and Employment: A Case Study of the Fast-Food Industry in New Jersey and Pennsylvania. The paper studies whether New Jersey’s increase in the minimum wage reduced employment in fast-food restaurants relative to nearby stores in Pennsylvania.\nThis paper is important because it challenged the standard prediction that a higher minimum wage must reduce employment. Using survey data collected from fast-food restaurants before and after the policy change, the authors compare employment outcomes in New Jersey and Pennsylvania and use a difference-in-differences framework to estimate the effect of the law.\nMy replication focuses on three pieces of the paper. First, I reproduce summary statistics similar to Table 2. Second, I replicate the main employment comparison behind Table 3. Third, I estimate the simplest reduced-form regression from Table 4, column (i). Together, these results capture the paper’s main empirical finding and show how the diff-in-diff design supports a causal interpretation."
+  },
+  {
+    "objectID": "hw2/hw2_questions.html#main-analysis",
+    "href": "hw2/hw2_questions.html#main-analysis",
+    "title": "Replication of Card and Krueger (1994)",
+    "section": "Main Analysis",
+    "text": "Main Analysis\n\n\n\n\n\n\n\n\n\nEMPTOT\nEMPTOT2\nWAGE_ST\nWAGE_ST2\nPMEAL\nPMEAL2\n\n\n\n\nPA\n23.331\n21.166\n4.630\n4.617\n3.042\n3.027\n\n\nNJ\n20.439\n21.027\n4.612\n5.081\n3.351\n3.415\n\n\n\n\n\n\n\nThe table above reports mean employment, starting wages, and meal prices for Pennsylvania and New Jersey stores in the two survey waves. This reproduces the basic structure of Table 2 and helps show how outcomes changed across states before and after the New Jersey minimum wage increase.\n\n\n\n\n\n\n\n\n\nPA\nNJ\nDiff (NJ - PA)\n\n\n\n\nBefore (wave 1)\n23.331\n20.439\n-2.892\n\n\nAfter (wave 2)\n21.166\n21.027\n-0.138\n\n\nChange\n-2.283\n0.467\n2.750\n\n\n\n\n\n\n\nThe table above recreates the core idea of Table 3. It compares average full-time-equivalent employment in Pennsylvania and New Jersey before and after the policy change, and then reports the change in each state.\n\n\n\n\n\n\n\n\n\ncoefficient\nstd_error\nt_stat\np_value\n\n\n\n\nNJ\n2.75\n1.1544\n2.3823\n0.0177\n\n\n\n\n\n\n\nThe regression above reproduces the simplest reduced-form specification from Table 4, where the change in employment is regressed on a New Jersey indicator. In this setup, the coefficient on the New Jersey dummy is the difference-in-differences style estimate of how employment changed in New Jersey relative to Pennsylvania."
+  },
+  {
+    "objectID": "hw2/hw2_questions.html#something-additional",
+    "href": "hw2/hw2_questions.html#something-additional",
+    "title": "Replication of Card and Krueger (1994)",
+    "section": "Something Additional",
+    "text": "Something Additional\nOne useful way to understand the Card and Krueger design is to view it as a simple difference-in-differences setup. Pennsylvania stores serve as a comparison group, while New Jersey stores are the treated group because they were exposed to the higher minimum wage. The key identifying idea is that, absent the policy change, employment trends in New Jersey would have moved similarly to those in Pennsylvania. Under that assumption, the difference in the before-after changes across the two states can be interpreted causally.\nThe simple comparison in the tables above already shows why this design matters. A raw post-treatment comparison between New Jersey and Pennsylvania would mix policy effects with any pre-existing differences between the two states. By instead comparing changes over time, the analysis differences out permanent baseline gaps across locations. That is the central logic of diff-in-diff and the main reason the paper can make a causal argument rather than a purely descriptive one."
+  },
+  {
+    "objectID": "hw2/hw2_questions.html#introduction-1",
+    "href": "hw2/hw2_questions.html#introduction-1",
+    "title": "Replication of Card and Krueger (1994)",
+    "section": "Introduction",
+    "text": "Introduction\nIn this post, I replicate part of Card and Krueger’s classic 1994 paper, Minimum Wages and Employment: A Case Study of the Fast-Food Industry in New Jersey and Pennsylvania. The paper studies whether New Jersey’s increase in the minimum wage reduced employment in fast-food restaurants relative to nearby stores in Pennsylvania.\nThis paper is important because it challenged the standard prediction that a higher minimum wage must reduce employment. Using survey data collected from fast-food restaurants before and after the policy change, the authors compare employment outcomes in New Jersey and Pennsylvania and use a difference-in-differences framework to estimate the effect of the law.\nMy replication focuses on three pieces of the paper. First, I reproduce summary statistics similar to Table 2. Second, I replicate the main employment comparison behind Table 3. Third, I estimate the simplest reduced-form regression from Table 4, column (i). Together, these results capture the paper’s main empirical finding and show how the diff-in-diff design supports a causal interpretation."
   }
 ]

@@ -25,5 +25,8 @@
   },
   "projects/ab-testing/index.qmd": {
     "index.html": "6ad0f014"
+  },
+  "hw2/hw2_questions.qmd": {
+    "hw2_questions.html": "8bfcc2af"
   }
 }
