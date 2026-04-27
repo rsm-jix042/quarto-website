@@ -244,6 +244,7 @@ peek_points = np.arange(100, 1001, 100)
 n_experiments = 10000
 
 false_positive_flags = np.zeros(n_experiments)
+first_significant_peek = np.full(n_experiments, np.nan)
 
 for exp in range(n_experiments):
     A_null = np.random.binomial(1, pi_null, n_total)
@@ -270,6 +271,7 @@ for exp in range(n_experiments):
 
             if p_m < 0.05:
                 significant_any = True
+                first_significant_peek[exp] = m
                 break
 
     false_positive_flags[exp] = significant_any
@@ -279,5 +281,33 @@ empirical_false_positive_rate
 ```
 
 The result above is the empirical false positive rate when I allow repeated peeking. It should be noticeably larger than the nominal 0.05 rate from a single test. This happens because each interim look gives me another chance to reject the null by random fluctuation alone.
+
+Another way to see the same problem is to plot how the false positive rate accumulates as more interim checks are allowed. The figure below shows the share of simulated experiments that would have produced at least one false positive by each peek point.
+
+```{python}
+peek_risk_df = pd.DataFrame({
+    "peek_point": peek_points,
+    "false_positive_rate": [
+        np.mean(first_significant_peek <= point)
+        for point in peek_points
+    ]
+})
+
+plt.figure(figsize=(8, 5))
+plt.plot(
+    peek_risk_df["peek_point"],
+    peek_risk_df["false_positive_rate"],
+    marker="o",
+    label="Repeated peeking"
+)
+plt.axhline(0.05, linestyle="--", label="Nominal 5% level")
+plt.xlabel("Observations per group at each peek")
+plt.ylabel("Cumulative false positive rate")
+plt.title("False Positives Accumulate with Repeated Peeking")
+plt.legend()
+plt.show()
+```
+
+The upward-sloping line makes the peeking problem easier to diagnose. Even though each individual test uses a 5% cutoff, the chance of getting at least one false positive increases as the number of interim checks grows.
 
 In practice, this means that repeatedly checking an experiment and stopping early whenever a result looks significant can make weak evidence appear stronger than it really is. If I want to monitor results over time, I need methods that explicitly adjust for sequential testing rather than using the same fixed 5% cutoff at every peek.
