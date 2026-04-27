@@ -245,10 +245,24 @@ n_experiments = 10000
 
 false_positive_flags = np.zeros(n_experiments)
 first_significant_peek = np.full(n_experiments, np.nan)
+final_only_flags = np.zeros(n_experiments)
 
 for exp in range(n_experiments):
     A_null = np.random.binomial(1, pi_null, n_total)
     B_null = np.random.binomial(1, pi_null, n_total)
+
+    theta_final = A_null.mean() - B_null.mean()
+    pi_A_final = A_null.mean()
+    pi_B_final = B_null.mean()
+    se_final = np.sqrt(
+        (pi_A_final * (1 - pi_A_final) / n_total) +
+        (pi_B_final * (1 - pi_B_final) / n_total)
+    )
+
+    if se_final > 0:
+        z_final = theta_final / se_final
+        p_final = 2 * (1 - stats.norm.cdf(abs(z_final)))
+        final_only_flags[exp] = p_final < 0.05
 
     significant_any = False
 
@@ -277,10 +291,46 @@ for exp in range(n_experiments):
     false_positive_flags[exp] = significant_any
 
 empirical_false_positive_rate = false_positive_flags.mean()
+final_only_false_positive_rate = final_only_flags.mean()
 empirical_false_positive_rate
 ```
 
 The result above is the empirical false positive rate when I allow repeated peeking. It should be noticeably larger than the nominal 0.05 rate from a single test. This happens because each interim look gives me another chance to reject the null by random fluctuation alone.
+
+To make the comparison more concrete, I also compute the false positive rate from a fixed-horizon design where I only test once, after all 1,000 observations per group have been collected. In this simulation, the final-only false positive rate is **`{python} f"{float(final_only_false_positive_rate):.3f}"`**, while the repeated-peeking false positive rate is **`{python} f"{float(empirical_false_positive_rate):.3f}"`**. The gap between those two numbers is the practical cost of checking the same experiment over and over without adjusting the testing rule.
+
+```{python}
+comparison_df = pd.DataFrame({
+    "testing_rule": ["Final test only", "Repeated peeking"],
+    "false_positive_rate": [
+        final_only_false_positive_rate,
+        empirical_false_positive_rate
+    ]
+})
+
+plt.figure(figsize=(7, 5))
+bars = plt.bar(
+    comparison_df["testing_rule"],
+    comparison_df["false_positive_rate"]
+)
+plt.axhline(0.05, linestyle="--", label="Nominal 5% level")
+plt.ylabel("False positive rate")
+plt.title("Final Testing vs. Repeated Peeking")
+plt.ylim(0, max(comparison_df["false_positive_rate"]) + 0.05)
+
+for bar in bars:
+    height = bar.get_height()
+    plt.text(
+        bar.get_x() + bar.get_width() / 2,
+        height,
+        f"{height:.1%}",
+        ha="center",
+        va="bottom"
+    )
+
+plt.legend()
+plt.show()
+```
 
 Another way to see the same problem is to plot how the false positive rate accumulates as more interim checks are allowed. The figure below shows the share of simulated experiments that would have produced at least one false positive by each peek point.
 
