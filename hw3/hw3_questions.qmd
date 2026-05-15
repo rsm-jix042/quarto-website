@@ -16,10 +16,11 @@ format:
 #| message: false
 #| warning: false
 
-library(tidyverse)
-library(gt)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(knitr)
 library(gridExtra)
-library(cowplot)
 library(glue)
 
 # Read the data
@@ -82,17 +83,22 @@ summary_stats <- blueprinty_data %>%
     group = c("Non-customers", "Blueprinty Customers")[iscustomer + 1]
   )
 
+n_non <- summary_stats$n[summary_stats$iscustomer == 0]
+n_cust <- summary_stats$n[summary_stats$iscustomer == 1]
+mean_non <- summary_stats$mean_patents[summary_stats$iscustomer == 0]
+mean_cust <- summary_stats$mean_patents[summary_stats$iscustomer == 1]
+
 # Create side-by-side histograms
 p1 <- blueprinty_data %>%
   filter(iscustomer == 0) %>%
   ggplot(aes(x = patents)) +
   geom_histogram(bins = 15, fill = "#E8E8E8", color = "black", alpha = 0.8) +
   labs(
-    title = "Non-Customers (n = 1,234)",
+    title = glue::glue("Non-Customers (n = {n_non})"),
     x = "Patents Awarded (5-year period)",
     y = "Number of Firms"
   ) +
-  xlim(-0.5, 15) +
+  coord_cartesian(xlim = c(-0.5, 15)) +
   theme_minimal() +
   theme(
     plot.title = element_text(face = "bold", size = 12),
@@ -104,18 +110,18 @@ p2 <- blueprinty_data %>%
   ggplot(aes(x = patents)) +
   geom_histogram(bins = 15, fill = "#4A90E2", color = "black", alpha = 0.8) +
   labs(
-    title = "Blueprinty Customers (n = 266)",
+    title = glue::glue("Blueprinty Customers (n = {n_cust})"),
     x = "Patents Awarded (5-year period)",
     y = "Number of Firms"
   ) +
-  xlim(-0.5, 15) +
+  coord_cartesian(xlim = c(-0.5, 15)) +
   theme_minimal() +
   theme(
     plot.title = element_text(face = "bold", size = 12),
     panel.grid.major.x = element_blank()
   )
 
-plot_grid(p1, p2, nrow = 1)
+grid.arrange(p1, p2, nrow = 1)
 
 # Print summary table
 summary_stats %>%
@@ -127,11 +133,10 @@ summary_stats %>%
     "Std Dev" = sd_patents,
     "N Firms" = n
   ) %>%
-  gt() %>%
-  fmt_number(columns = c("Mean Patents", "Median Patents", "Std Dev"), decimals = 2)
+  knitr::kable(digits = 2, row.names = FALSE)
 ```
 
-**What we observe:** Blueprinty customers have a notably higher mean number of patents (5.18 vs 4.26). On the surface, this supports the marketing claim—but we must be cautious. The customer group is much smaller (266 vs 1,234 firms), and the distribution shapes are similar, suggesting confounding factors may be at play.
+**What we observe:** Blueprinty customers have a notably higher mean number of patents (`r round(mean_cust, 2)` vs. `r round(mean_non, 2)`). On the surface, this supports the marketing claim—but we must be cautious. The customer group is smaller (`r n_cust` vs. `r n_non` firms), and the distribution shapes overlap substantially, suggesting confounding factors may be at play.
 
 ### Selection Bias: Firm Age and Geography
 
@@ -156,7 +161,7 @@ p_age_customer <- blueprinty_data %>%
     fill = ""
   ) +
   theme_minimal() +
-  theme(legend.position = "inside", legend.position.inside = c(0.98, 0.97),
+  theme(legend.position = c(0.98, 0.97),
         legend.justification = c(1, 1))
 
 # Age statistics
@@ -170,6 +175,9 @@ age_by_group <- blueprinty_data %>%
   )
 
 print(age_by_group)
+
+mean_age_non <- age_by_group$mean_age[age_by_group$iscustomer == 0]
+mean_age_cust <- age_by_group$mean_age[age_by_group$iscustomer == 1]
 
 # Region distribution
 region_crosstab <- table(blueprinty_data$region, blueprinty_data$iscustomer)
@@ -204,19 +212,18 @@ p_region <- blueprinty_data %>%
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
-    legend.position = "inside",
-    legend.position.inside = c(0.98, 0.97),
+    legend.position = c(0.98, 0.97),
     legend.justification = c(1, 1)
   )
 
-plot_grid(p_age_customer, p_region, nrow = 1)
+grid.arrange(p_age_customer, p_region, nrow = 1)
 ```
 
 **Key findings on selection bias:**
 
-- **Age:** Blueprinty customers are slightly younger on average (28.6 years) compared to non-customers (30.1 years). While not dramatic, this suggests younger firms may be more likely to adopt new software solutions.
+- **Age:** Blueprinty customers are slightly older on average (`r round(mean_age_cust, 1)` years) compared to non-customers (`r round(mean_age_non, 1)` years). The gap is not dramatic, but it is still a reminder that customers and non-customers are not randomly assigned.
 
-- **Geography:** The regional distribution differs between groups. Customers are more concentrated in the Northeast (where Blueprinty likely focuses marketing efforts) and slightly less represented in the Midwest and South.
+- **Geography:** The regional distribution differs sharply between groups. Customers are especially concentrated in the Northeast (where Blueprinty may have stronger sales coverage or product-market fit) and less represented across the other regions.
 
 These differences matter because age and geography may independently influence patenting success. Simply comparing raw patent counts conflates the effect of the software with these underlying firm characteristics. That's where regression comes in.
 
@@ -298,7 +305,7 @@ max_loglik <- loglik_values[max_idx]
 
 # Plot the log-likelihood
 ggplot(data.frame(lambda = lambda_grid, loglik = loglik_values), aes(x = lambda, y = loglik)) +
-  geom_line(size = 1, color = "#2E86DE") +
+  geom_line(linewidth = 1, color = "#2E86DE") +
   geom_point(aes(x = mle_lambda_analytical, y = max_loglik), 
              size = 4, color = "#A23B72") +
   labs(
@@ -322,7 +329,7 @@ ggplot(data.frame(lambda = lambda_grid, loglik = loglik_values), aes(x = lambda,
   )
 ```
 
-**Interpreting the curve:** The log-likelihood curve peaks at the value of $\lambda$ that makes our observed data most likely. We can "read" the MLE visually off this curve—it's roughly 4.4 in this case.
+**Interpreting the curve:** The log-likelihood curve peaks at the value of $\lambda$ that makes our observed data most likely. We can "read" the MLE visually off this curve—it's roughly `r round(mle_lambda_analytical, 2)` in this case.
 
 ### Analytical Solution
 
@@ -422,31 +429,41 @@ head(X, 3)
 # Define the Poisson regression log-likelihood
 poisson_regression_loglikelihood <- function(beta, Y, X) {
   # Linear predictor: X * beta
-  eta <- X %*% beta
+  eta <- drop(X %*% beta)
   # Inverse link: exp(eta)
   lambda <- exp(eta)
   # Log-likelihood
-  loglik <- sum(-lambda + Y * log(lambda))
+  loglik <- sum(-lambda + Y * eta)
   return(loglik)
+}
+
+# Gradient of the negative log-likelihood. Supplying this helps optim()
+# converge reliably with age and age-squared in the same design matrix.
+poisson_regression_gradient <- function(beta, Y, X) {
+  eta <- drop(X %*% beta)
+  lambda <- exp(eta)
+  -drop(t(X) %*% (Y - lambda))
 }
 
 # Fit the model with optim()
 # Start with zeros as initial guess
 initial_beta <- rep(0, ncol(X))
 
-# Use BFGS method and request the Hessian
+# Use BFGS with the analytic gradient
 mle_fit <- optim(
   par = initial_beta,
   fn = function(b) -poisson_regression_loglikelihood(b, Y_obs, X),
+  gr = function(b) poisson_regression_gradient(b, Y_obs, X),
   method = "BFGS",
-  hessian = TRUE  # Request the Hessian for standard errors
+  hessian = FALSE,
+  control = list(maxit = 10000, reltol = 1e-12)
 )
 
 beta_mle <- mle_fit$par
-hessian_matrix <- mle_fit$hessian
 
-# Compute standard errors from the Hessian
-# SE = sqrt(diag(inv(Hessian)))
+# Compute standard errors from the analytic information matrix.
+lambda_mle <- as.numeric(exp(X %*% beta_mle))
+hessian_matrix <- t(X) %*% (X * lambda_mle)
 information_matrix <- solve(hessian_matrix)
 se_beta <- sqrt(diag(information_matrix))
 
@@ -455,7 +472,7 @@ results_df <- data.frame(
   Variable = colnames(X),
   Coefficient = beta_mle,
   StdErr = se_beta,
-  t_stat = beta_mle / se_beta,
+  z_stat = beta_mle / se_beta,
   p_value = 2 * (1 - pnorm(abs(beta_mle / se_beta)))
 )
 
@@ -467,18 +484,16 @@ results_table <- results_df %>%
   mutate(
     Coefficient = round(Coefficient, 4),
     StdErr = round(StdErr, 4),
-    t_stat = round(t_stat, 3),
+    z_stat = round(z_stat, 3),
     p_value = round(p_value, 4)
   ) %>%
-  gt() %>%
-  cols_label(
-    Variable = "Variable",
-    Coefficient = "Coef.",
-    StdErr = "Std. Error",
-    t_stat = "t-statistic",
-    p_value = "p-value"
+  rename(
+    "Coef." = Coefficient,
+    "Std. Error" = StdErr,
+    "z-statistic" = z_stat,
+    "p-value" = p_value
   ) %>%
-  fmt_number(columns = c(Coefficient, StdErr, t_stat), decimals = 4)
+  knitr::kable(digits = 4, row.names = FALSE)
 
 results_table
 ```
@@ -515,18 +530,17 @@ comparison_df <- data.frame(
 comparison_tbl <- comparison_df %>%
   select(Variable, MLE_Coef, GLM_Coef, Coef_Diff) %>%
   mutate(across(c(MLE_Coef, GLM_Coef, Coef_Diff), ~round(., 4))) %>%
-  gt() %>%
-  cols_label(
-    Variable = "Variable",
-    MLE_Coef = "MLE Coefficient",
-    GLM_Coef = "GLM Coefficient",
-    Coef_Diff = "Difference"
-  )
+  rename(
+    "MLE Coefficient" = MLE_Coef,
+    "GLM Coefficient" = GLM_Coef,
+    "Difference" = Coef_Diff
+  ) %>%
+  knitr::kable(digits = 4, row.names = FALSE)
 
 comparison_tbl
 ```
 
-**Excellent agreement:** The MLE estimates from our hand-coded optimization match the GLM results almost exactly. Small differences in standard errors (GLM uses analytical derivatives while our Hessian approximation is numerical) are expected and unimportant.
+**Excellent agreement:** The MLE estimates from our hand-coded optimization match the GLM results almost exactly. That is a useful validation check: the likelihood we coded and the likelihood used by `glm()` are solving the same statistical problem.
 
 ### Interpreting the Results
 
@@ -552,15 +566,14 @@ interpret_df %>%
     pct_change = round(pct_change, 2),
     p_value = round(p_value, 4)
   ) %>%
-  gt() %>%
-  cols_label(
-    Variable = "Variable",
-    Coefficient = "β",
-    exp_coef = "exp(β)",
-    pct_change = "% Change",
-    sig = "",
-    p_value = "p-value"
-  )
+  rename(
+    "β" = Coefficient,
+    "exp(β)" = exp_coef,
+    "% Change" = pct_change,
+    "Signif." = sig,
+    "p-value" = p_value
+  ) %>%
+  knitr::kable(digits = 4, row.names = FALSE)
 ```
 
 **Key interpretations:**
@@ -569,7 +582,7 @@ interpret_df %>%
 
 - **Age²:** Negative coefficient indicates diminishing returns to age. Very old firms may plateau in their innovation.
 
-- **Region effects:** Different regions show different baseline patenting rates. The Northeast appears to be a hub of innovation.
+- **Region effects:** Once age and customer status are included, the regional coefficients are comparatively small and not very precisely estimated. Geography still matters for selection into Blueprinty usage, but it is not the main driver of patent counts in this specification.
 
 - **Blueprinty Customer:** The coefficient on `factor(iscustomer)1` is our main estimate of interest. A positive coefficient would suggest customers get more patents even after controlling for age and region.
 
@@ -595,7 +608,7 @@ diagnostics <- data.frame(
 # Plot 1: Actual vs Predicted
 p_fit1 <- ggplot(diagnostics, aes(x = predicted, y = actual)) +
   geom_point(alpha = 0.5, color = "#4A90E2") +
-  geom_abline(intercept = 0, slope = 1, color = "#E74C3C", size = 1, linetype = "dashed") +
+  geom_abline(intercept = 0, slope = 1, color = "#E74C3C", linewidth = 1, linetype = "dashed") +
   labs(
     title = "Actual vs Predicted Patent Counts",
     x = "Predicted Count (λ)",
@@ -606,7 +619,7 @@ p_fit1 <- ggplot(diagnostics, aes(x = predicted, y = actual)) +
 # Plot 2: Pearson Residuals vs Predicted
 p_fit2 <- ggplot(diagnostics, aes(x = predicted, y = pearson_residuals)) +
   geom_point(alpha = 0.5, color = "#27AE60") +
-  geom_hline(yintercept = 0, color = "#E74C3C", size = 1, linetype = "dashed") +
+  geom_hline(yintercept = 0, color = "#E74C3C", linewidth = 1, linetype = "dashed") +
   geom_hline(yintercept = c(-2, 2), color = "gray", linetype = "dotted") +
   labs(
     title = "Residual Plot: Checking Model Assumptions",
@@ -615,13 +628,14 @@ p_fit2 <- ggplot(diagnostics, aes(x = predicted, y = pearson_residuals)) +
   ) +
   theme_minimal()
 
-plot_grid(p_fit1, p_fit2, nrow = 1)
+grid.arrange(p_fit1, p_fit2, nrow = 1)
 
 # Goodness of fit statistics
 cat("Model Fit Statistics:\n")
 cat("Mean Absolute Error (MAE):", round(mean(abs(diagnostics$residuals)), 3), "\n")
 cat("Root Mean Squared Error (RMSE):", round(sqrt(mean(diagnostics$residuals^2)), 3), "\n")
-cat("Deviance:", round(-2 * -mle_fit$value, 2), "\n")
+cat("Residual deviance:", round(glm_model$deviance, 2), "\n")
+cat("AIC:", round(AIC(glm_model), 2), "\n")
 ```
 
 The residual plot shows relatively balanced scatter around zero, suggesting our Poisson assumption is reasonable. The actual vs. predicted plot confirms the model captures the general trend in patent counts.
@@ -651,9 +665,9 @@ forest_data <- data.frame(
 
 # Create forest plot
 ggplot(forest_data, aes(y = reorder(Variable, Coefficient), x = Coefficient)) +
-  geom_vline(xintercept = 0, color = "gray", linetype = "dashed", size = 0.8) +
+  geom_vline(xintercept = 0, color = "gray", linetype = "dashed", linewidth = 0.8) +
   geom_errorbarh(aes(xmin = CI_Lower, xmax = CI_Upper, color = Significant), 
-                 height = 0.2, size = 1) +
+                 height = 0.2, linewidth = 1) +
   geom_point(aes(color = Significant), size = 3) +
   scale_color_manual(
     values = c("Yes" = "#E74C3C", "No" = "#95A5A6"),
@@ -727,7 +741,7 @@ effect_data <- data.frame(
 # Plot 1: Distribution of treatment effects
 p1 <- ggplot(effect_data, aes(x = effect)) +
   geom_histogram(bins = 30, fill = "#4A90E2", alpha = 0.7, color = "black") +
-  geom_vline(aes(xintercept = ate), color = "#E74C3C", size = 1, linetype = "dashed") +
+  geom_vline(aes(xintercept = ate), color = "#E74C3C", linewidth = 1, linetype = "dashed") +
   labs(
     title = "Distribution of Individual Treatment Effects",
     x = "Predicted Additional Patents (Customer vs Non-Customer)",
@@ -760,7 +774,7 @@ p2 <- effect_data %>%
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-plot_grid(p1, p2, nrow = 1)
+grid.arrange(p1, p2, nrow = 1)
 ```
 
 ### Summary of Findings
@@ -784,11 +798,8 @@ summary_table <- data.frame(
     round(sd(individual_effects), 4)
   )
 ) %>%
-  gt() %>%
-  cols_label(
-    Statistic = "Estimate",
-    Value = "Value"
-  )
+  rename(Estimate = Statistic) %>%
+  knitr::kable(digits = 4, row.names = FALSE)
 
 summary_table
 ```
@@ -812,9 +823,11 @@ for (i in 1:n_bootstrap) {
   # Fit model on bootstrap sample
   tryCatch({
     mle_boot <- optim(
-      par = initial_beta,
+      par = beta_mle,
       fn = function(b) -poisson_regression_loglikelihood(b, Y_boot, X_boot),
-      method = "BFGS"
+      gr = function(b) poisson_regression_gradient(b, Y_boot, X_boot),
+      method = "BFGS",
+      control = list(maxit = 1000, reltol = 1e-10)
     )
     
     # Compute ATE on bootstrap sample
@@ -844,9 +857,9 @@ cat("95% Bootstrap Confidence Interval: [",
 # Visualize bootstrap distribution
 ggplot(data.frame(ATE = bootstrap_ates_clean), aes(x = ATE)) +
   geom_histogram(bins = 40, fill = "#4A90E2", alpha = 0.7, color = "black") +
-  geom_vline(aes(xintercept = ate), color = "#E74C3C", size = 1.5, linetype = "solid") +
-  geom_vline(aes(xintercept = ci_lower_ate), color = "#F39C12", size = 1, linetype = "dashed") +
-  geom_vline(aes(xintercept = ci_upper_ate), color = "#F39C12", size = 1, linetype = "dashed") +
+  geom_vline(aes(xintercept = ate), color = "#E74C3C", linewidth = 1.5, linetype = "solid") +
+  geom_vline(aes(xintercept = ci_lower_ate), color = "#F39C12", linewidth = 1, linetype = "dashed") +
+  geom_vline(aes(xintercept = ci_upper_ate), color = "#F39C12", linewidth = 1, linetype = "dashed") +
   labs(
     title = "Bootstrap Distribution of Average Treatment Effect",
     x = "Estimated ATE (additional patents)",
@@ -859,7 +872,7 @@ ggplot(data.frame(ATE = bootstrap_ates_clean), aes(x = ATE)) +
     label = glue::glue("Point Est: {round(ate, 3)}\n95% CI: [{round(ci_lower_ate, 3)}, {round(ci_upper_ate, 3)}]"),
     vjust = 1.5,
     hjust = 0,
-    fontsize = 3.5,
+    size = 3.5,
     color = "#E74C3C",
     fontface = "bold"
   ) +
@@ -936,22 +949,21 @@ robustness_tbl <- robustness_check %>%
     Effect_Multiplier = round(Effect_Multiplier, 4),
     Pct_Increase = round(Pct_Increase, 2)
   ) %>%
-  gt() %>%
-  cols_label(
-    Model = "Model Specification",
-    Customer_Coef = "Customer β",
-    Effect_Multiplier = "exp(β)",
-    Pct_Increase = "% Increase"
+  rename(
+    "Model Specification" = Model,
+    "Customer β" = Customer_Coef,
+    "exp(β)" = Effect_Multiplier,
+    "% Increase" = Pct_Increase
   ) %>%
-  fmt_number(columns = c(Customer_Coef, Effect_Multiplier), decimals = 4)
+  knitr::kable(digits = 4, row.names = FALSE)
 
 robustness_tbl
 
 cat("\nInterpretation of Robustness Checks:\n")
 cat("- All model specifications show a positive customer effect\n")
-cat("- The simple model (no controls) yields a larger effect, suggesting some upward bias\n")
-cat("- Removing region controls causes the effect to change, indicating confounding by geography\n")
-cat("- The full model effect is most reliable as it accounts for known confounders\n")
+cat("- The full model estimates a larger effect than the simple comparison, mainly after modeling the age pattern flexibly\n")
+cat("- Removing region controls barely changes the customer coefficient in this specification\n")
+cat("- The full model is still preferred because it accounts for the observable differences we can measure\n")
 ```
 
 ### Key Findings from Sensitivity Analysis
@@ -960,9 +972,9 @@ cat("- The full model effect is most reliable as it accounts for known confounde
 
 1. **Direction is robust:** Every specification shows a positive effect of being a Blueprinty customer. This is reassuring—the conclusion doesn't hinge on a specific modeling choice.
 
-2. **Magnitude depends on controls:** The simple model (without controls) shows a larger effect (~12%) than the full model (~9%). This **selection bias correction** is exactly what we expect: customers are slightly better firms to begin with, and controlling for age and region adjusts for that.
+2. **Magnitude depends on controls:** The simple model (without controls) implies about a `r round(robustness_check$Pct_Increase[robustness_check$Model == "Simple Model\n(customer only)"], 1)`% customer lift, while the full model implies about a `r round(robustness_check$Pct_Increase[robustness_check$Model == "Full Model\n(age, age², region, customer)"], 1)`% lift. The adjustment does not erase the customer effect; if anything, modeling the nonlinear age pattern makes the estimated association stronger.
 
-3. **Geography matters:** Removing region controls increases the effect, indicating that Blueprinty's customers are concentrated in regions that already have high patent rates. This is consistent with earlier findings that customers are disproportionately in the Northeast.
+3. **Geography matters for adoption, but less for this coefficient:** Customers are disproportionately in the Northeast, but removing region controls barely changes the customer estimate. In this dataset, age adjustment matters more for the customer coefficient than regional adjustment.
 
 This pattern is **exactly what we'd expect** from a well-specified model that correctly handles observable confounding.
 
