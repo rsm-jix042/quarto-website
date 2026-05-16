@@ -554,6 +554,25 @@ Y_i \sim \text{Poisson}(\lambda_i) \quad \text{where} \quad \lambda_i = \exp(X_i
 <li><strong>Customer indicator:</strong> The main effect of interest—how does being a Blueprinty customer affect patent rate?</li>
 </ul>
 </section>
+<section id="regression-log-likelihood" class="level3">
+<h3 class="anchored" data-anchor-id="regression-log-likelihood">Regression Log-Likelihood</h3>
+<p>For the regression model, each observation has its own Poisson rate:</p>
+<p><span class="math display">\[
+\lambda_i = \exp(X_i'\beta)
+\]</span></p>
+<p>Substituting this into the Poisson probability mass function gives:</p>
+<p><span class="math display">\[
+L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right]^{Y_i}}{Y_i!}
+\]</span></p>
+<p>Taking logs:</p>
+<p><span class="math display">\[
+\ell(\beta) = \sum_{i=1}^{n} \left[-\exp(X_i'\beta) + Y_i X_i'\beta - \log(Y_i!)\right]
+\]</span></p>
+<p>The final term, <span class="math inline">\(\log(Y_i!)\)</span>, does not depend on <span class="math inline">\(\beta\)</span>, so it can be dropped for numerical optimization. That leaves the objective we code below:</p>
+<p><span class="math display">\[
+\ell(\beta) \propto \sum_{i=1}^{n} \left[-\exp(X_i'\beta) + Y_i X_i'\beta\right]
+\]</span></p>
+</section>
 <section id="maximum-likelihood-estimation-with-optim" class="level3">
 <h3 class="anchored" data-anchor-id="maximum-likelihood-estimation-with-optim">Maximum Likelihood Estimation with optim()</h3>
 <div class="cell">

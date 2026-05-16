@@ -441,6 +441,32 @@ head(X, 3)
 - **Region dummies:** Captures regional variation in patenting culture (Northeast, Northwest, South, Southwest; Midwest is reference)
 - **Customer indicator:** The main effect of interest—how does being a Blueprinty customer affect patent rate?
 
+### Regression Log-Likelihood
+
+For the regression model, each observation has its own Poisson rate:
+
+$$
+\lambda_i = \exp(X_i'\beta)
+$$
+
+Substituting this into the Poisson probability mass function gives:
+
+$$
+L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right]^{Y_i}}{Y_i!}
+$$
+
+Taking logs:
+
+$$
+\ell(\beta) = \sum_{i=1}^{n} \left[-\exp(X_i'\beta) + Y_i X_i'\beta - \log(Y_i!)\right]
+$$
+
+The final term, $\log(Y_i!)$, does not depend on $\beta$, so it can be dropped for numerical optimization. That leaves the objective we code below:
+
+$$
+\ell(\beta) \propto \sum_{i=1}^{n} \left[-\exp(X_i'\beta) + Y_i X_i'\beta\right]
+$$
+
 ### Maximum Likelihood Estimation with optim()
 
 ```{r}
