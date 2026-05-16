@@ -9,7 +9,6 @@ format:
     toc-depth: 2
     code-fold: true
     code-summary: "Show code"
-    theme: cosmo
 ---
 
 ```{r}
