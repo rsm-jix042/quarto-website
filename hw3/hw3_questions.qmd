@@ -429,6 +429,21 @@ X <- model.matrix(
 X <- X[, colnames(X) != "factor(iscustomer)0"]
 colnames(X)
 
+coefficient_labels <- c(
+  "(Intercept)" = "Intercept",
+  "age" = "Firm age",
+  "I(age^2)" = "Firm age squared",
+  "factor(region)Northeast" = "Region: Northeast",
+  "factor(region)Northwest" = "Region: Northwest",
+  "factor(region)South" = "Region: South",
+  "factor(region)Southwest" = "Region: Southwest",
+  "factor(iscustomer)1" = "Blueprinty customer"
+)
+
+clean_coefficient_names <- function(x) {
+  unname(ifelse(x %in% names(coefficient_labels), coefficient_labels[x], x))
+}
+
 cat("Design matrix dimensions:", nrow(X), "x", ncol(X), "\n")
 head(X, 3)
 ```
@@ -513,7 +528,7 @@ se_beta <- sqrt(diag(information_matrix))
 
 # Create results table
 results_df <- data.frame(
-  Variable = colnames(X),
+  Variable = clean_coefficient_names(colnames(X)),
   Coefficient = beta_mle,
   StdErr = se_beta,
   z_stat = beta_mle / se_beta,
@@ -560,7 +575,7 @@ glm_se <- summary(glm_model)$coefficients[, "Std. Error"]
 
 # Compare
 comparison_df <- data.frame(
-  Variable = names(glm_coef),
+  Variable = clean_coefficient_names(names(glm_coef)),
   MLE_Coef = beta_mle,
   GLM_Coef = as.numeric(glm_coef),
   MLE_SE = se_beta,
@@ -630,7 +645,7 @@ interpret_df %>%
 
 - **Region effects:** Once age and customer status are included, the regional coefficients are comparatively small and not very precisely estimated. Geography still matters for selection into Blueprinty usage, but it is not the main driver of patent counts in this specification.
 
-- **Blueprinty Customer:** The coefficient on `factor(iscustomer)1` is our main estimate of interest. A positive coefficient would suggest customers get more patents even after controlling for age and region.
+- **Blueprinty Customer:** This is our main estimate of interest. A positive coefficient suggests Blueprinty customers get more patents even after controlling for age and region.
 
 ### Model Diagnostics and Goodness of Fit
 
@@ -687,6 +702,30 @@ cat("AIC:", round(AIC(glm_model), 2), "\n")
 
 The residual plot shows relatively balanced scatter around zero, suggesting our Poisson assumption is reasonable. The actual vs. predicted plot confirms the model captures the general trend in patent counts.
 
+### Checking for Overdispersion
+
+A useful diagnostic for count models is whether the data vary more than a strict Poisson model expects. In a Poisson model, the conditional mean and variance are assumed to be equal. If the variance is much larger than the mean, the coefficient estimates can still be informative, but the standard errors may be too optimistic.
+
+```{r}
+#| echo: false
+
+pearson_dispersion <- sum(diagnostics$pearson_residuals^2) / glm_model$df.residual
+
+overdispersion_note <- case_when(
+  pearson_dispersion > 1.5 ~ "Meaningful overdispersion",
+  pearson_dispersion > 1.2 ~ "Mild overdispersion",
+  TRUE ~ "Close to the Poisson assumption"
+)
+
+data.frame(
+  Metric = c("Pearson dispersion", "Interpretation"),
+  Value = c(round(pearson_dispersion, 2), overdispersion_note)
+) %>%
+  knitr::kable(row.names = FALSE)
+```
+
+The Pearson dispersion estimate is `r round(pearson_dispersion, 2)`, which suggests mild extra variation beyond the strict Poisson assumption. That does not overturn the main pattern, but it is a reason to treat the standard errors as approximate. In a production analysis, I would also report quasi-Poisson, negative binomial, or robust-standard-error results.
+
 ### Coefficient Visualization: Forest Plot
 
 Visual representation of all coefficients with confidence intervals provides a more intuitive understanding:
@@ -702,7 +741,7 @@ ci_upper <- beta_mle + 1.96 * se_beta
 
 # Create forest plot data
 forest_data <- data.frame(
-  Variable = colnames(X),
+  Variable = clean_coefficient_names(colnames(X)),
   Coefficient = beta_mle,
   CI_Lower = ci_lower,
   CI_Upper = ci_upper,
@@ -854,6 +893,44 @@ summary_table <- data.frame(
 
 summary_table
 ```
+
+### A Typical-Firm Translation
+
+The average treatment effect is useful, but it is easier to understand the result with one concrete counterfactual example. Holding firm age and region fixed, the model asks: what would the same firm be expected to receive as a non-customer versus as a Blueprinty customer?
+
+```{r}
+#| echo: false
+
+typical_age <- median(blueprinty_data$age)
+typical_region <- blueprinty_data %>%
+  count(region, sort = TRUE) %>%
+  slice(1) %>%
+  pull(region)
+
+typical_firm <- data.frame(
+  age = typical_age,
+  region = typical_region,
+  iscustomer = c(0, 1)
+)
+
+typical_prediction <- as.numeric(
+  predict(glm_model, newdata = typical_firm, type = "response")
+)
+
+typical_effect <- typical_prediction[2] - typical_prediction[1]
+typical_lift <- (typical_prediction[2] / typical_prediction[1] - 1) * 100
+
+data.frame(
+  Scenario = c("Same firm as a non-customer", "Same firm as a Blueprinty customer"),
+  "Predicted patents over 5 years" = round(typical_prediction, 2),
+  "Difference vs. non-customer" = c("--", paste0("+", round(typical_effect, 2))),
+  "Lift" = c("--", paste0(round(typical_lift, 1), "%")),
+  check.names = FALSE
+) %>%
+  knitr::kable(row.names = FALSE)
+```
+
+For a firm at the sample median age (`r round(typical_age, 1)` years) in the most common region (`r typical_region`), the model predicts about `r round(typical_effect, 2)` additional patents over five years if the firm is treated as a Blueprinty customer. This turns the regression coefficient into a more business-readable statement.
 
 ### Confidence Intervals for the Treatment Effect
 
@@ -1036,6 +1113,12 @@ This pattern is **exactly what we'd expect** from a well-specified model that co
 ## Conclusion: What Can We Claim?
 
 Our analysis provides evidence **consistent with** Blueprinty's marketing claim. After controlling for firm age and geographic region, the model suggests that being a Blueprinty customer is associated with approximately **`r round(ate, 2)` additional patents** in a 5-year period.
+
+### What Blueprinty Can Say
+
+A careful and defensible marketing statement would be: **among firms of similar age and region, Blueprinty customers are associated with higher expected patent approvals over five years.** That is a stronger statement than a raw comparison, because it adjusts for observable differences between customers and non-customers.
+
+The statement I would avoid is: **Blueprinty's software causes firms to receive more patents.** This dataset is observational, so it supports a strong association, not a clean causal claim.
 
 ### Important Caveats
 

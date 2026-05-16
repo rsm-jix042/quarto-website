@@ -621,7 +621,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 <span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Create results table</span></span>
 <span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>results_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">colnames</span>(X),</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">clean_coefficient_names</span>(<span class="fu">colnames</span>(X)),</span>
 <span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>  <span class="at">Coefficient =</span> beta_mle,</span>
 <span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">StdErr =</span> se_beta,</span>
 <span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">z_stat =</span> beta_mle <span class="sc">/</span> se_beta,</span>
@@ -673,56 +673,56 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: left;">Intercept</td>
 <td style="text-align: right;">-0.5089</td>
 <td style="text-align: right;">0.1832</td>
 <td style="text-align: right;">-2.778</td>
 <td style="text-align: right;">0.0055</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">age</td>
+<td style="text-align: left;">Firm age</td>
 <td style="text-align: right;">0.1486</td>
 <td style="text-align: right;">0.0139</td>
 <td style="text-align: right;">10.716</td>
 <td style="text-align: right;">0.0000</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">I(age^2)</td>
+<td style="text-align: left;">Firm age squared</td>
 <td style="text-align: right;">-0.0030</td>
 <td style="text-align: right;">0.0003</td>
 <td style="text-align: right;">-11.513</td>
 <td style="text-align: right;">0.0000</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">factor(region)Northeast</td>
+<td style="text-align: left;">Region: Northeast</td>
 <td style="text-align: right;">0.0292</td>
 <td style="text-align: right;">0.0436</td>
 <td style="text-align: right;">0.669</td>
 <td style="text-align: right;">0.5037</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">factor(region)Northwest</td>
+<td style="text-align: left;">Region: Northwest</td>
 <td style="text-align: right;">-0.0176</td>
 <td style="text-align: right;">0.0538</td>
 <td style="text-align: right;">-0.327</td>
 <td style="text-align: right;">0.7438</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">factor(region)South</td>
+<td style="text-align: left;">Region: South</td>
 <td style="text-align: right;">0.0566</td>
 <td style="text-align: right;">0.0527</td>
 <td style="text-align: right;">1.074</td>
 <td style="text-align: right;">0.2828</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">factor(region)Southwest</td>
+<td style="text-align: left;">Region: Southwest</td>
 <td style="text-align: right;">0.0506</td>
 <td style="text-align: right;">0.0472</td>
 <td style="text-align: right;">1.072</td>
 <td style="text-align: right;">0.2839</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">factor(iscustomer)1</td>
+<td style="text-align: left;">Blueprinty customer</td>
 <td style="text-align: right;">0.2076</td>
 <td style="text-align: right;">0.0309</td>
 <td style="text-align: right;">6.719</td>
@@ -752,7 +752,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 <span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare</span></span>
 <span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>comparison_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">names</span>(glm_coef),</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">clean_coefficient_names</span>(<span class="fu">names</span>(glm_coef)),</span>
 <span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">MLE_Coef =</span> beta_mle,</span>
 <span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">GLM_Coef =</span> <span class="fu">as.numeric</span>(glm_coef),</span>
 <span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">MLE_SE =</span> se_beta,</span>
@@ -787,49 +787,49 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: left;">Intercept</td>
 <td style="text-align: right;">-0.5089</td>
 <td style="text-align: right;">-0.5089</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">age</td>
+<td style="text-align: left;">Firm age</td>
 <td style="text-align: right;">0.1486</td>
 <td style="text-align: right;">0.1486</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">I(age^2)</td>
+<td style="text-align: left;">Firm age squared</td>
 <td style="text-align: right;">-0.0030</td>
 <td style="text-align: right;">-0.0030</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">factor(region)Northeast</td>
+<td style="text-align: left;">Region: Northeast</td>
 <td style="text-align: right;">0.0292</td>
 <td style="text-align: right;">0.0292</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">factor(region)Northwest</td>
+<td style="text-align: left;">Region: Northwest</td>
 <td style="text-align: right;">-0.0176</td>
 <td style="text-align: right;">-0.0176</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">factor(region)South</td>
+<td style="text-align: left;">Region: South</td>
 <td style="text-align: right;">0.0566</td>
 <td style="text-align: right;">0.0566</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">factor(region)Southwest</td>
+<td style="text-align: left;">Region: Southwest</td>
 <td style="text-align: right;">0.0506</td>
 <td style="text-align: right;">0.0506</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">factor(iscustomer)1</td>
+<td style="text-align: left;">Blueprinty customer</td>
 <td style="text-align: right;">0.2076</td>
 <td style="text-align: right;">0.2076</td>
 <td style="text-align: right;">0</td>
@@ -857,7 +857,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: left;">Intercept</td>
 <td style="text-align: right;">-0.5089</td>
 <td style="text-align: right;">0.6011</td>
 <td style="text-align: right;">-39.89</td>
@@ -865,7 +865,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 <td style="text-align: right;">0.0055</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">age</td>
+<td style="text-align: left;">Firm age</td>
 <td style="text-align: right;">0.1486</td>
 <td style="text-align: right;">1.1602</td>
 <td style="text-align: right;">16.02</td>
@@ -873,7 +873,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 <td style="text-align: right;">0.0000</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">I(age^2)</td>
+<td style="text-align: left;">Firm age squared</td>
 <td style="text-align: right;">-0.0030</td>
 <td style="text-align: right;">0.9970</td>
 <td style="text-align: right;">-0.30</td>
@@ -881,7 +881,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 <td style="text-align: right;">0.0000</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">factor(region)Northeast</td>
+<td style="text-align: left;">Region: Northeast</td>
 <td style="text-align: right;">0.0292</td>
 <td style="text-align: right;">1.0296</td>
 <td style="text-align: right;">2.96</td>
@@ -889,7 +889,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 <td style="text-align: right;">0.5037</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">factor(region)Northwest</td>
+<td style="text-align: left;">Region: Northwest</td>
 <td style="text-align: right;">-0.0176</td>
 <td style="text-align: right;">0.9826</td>
 <td style="text-align: right;">-1.74</td>
@@ -897,7 +897,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 <td style="text-align: right;">0.7438</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">factor(region)South</td>
+<td style="text-align: left;">Region: South</td>
 <td style="text-align: right;">0.0566</td>
 <td style="text-align: right;">1.0582</td>
 <td style="text-align: right;">5.82</td>
@@ -905,7 +905,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 <td style="text-align: right;">0.2828</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">factor(region)Southwest</td>
+<td style="text-align: left;">Region: Southwest</td>
 <td style="text-align: right;">0.0506</td>
 <td style="text-align: right;">1.0519</td>
 <td style="text-align: right;">5.19</td>
@@ -913,7 +913,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 <td style="text-align: right;">0.2839</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">factor(iscustomer)1</td>
+<td style="text-align: left;">Blueprinty customer</td>
 <td style="text-align: right;">0.2076</td>
 <td style="text-align: right;">1.2307</td>
 <td style="text-align: right;">23.07</td>
@@ -929,7 +929,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 <li><p><strong>Age:</strong> Positive coefficient suggests more established firms get more patents. This makes sense—older, larger firms have more resources for R&amp;D.</p></li>
 <li><p><strong>Age²:</strong> Negative coefficient indicates diminishing returns to age. Very old firms may plateau in their innovation.</p></li>
 <li><p><strong>Region effects:</strong> Once age and customer status are included, the regional coefficients are comparatively small and not very precisely estimated. Geography still matters for selection into Blueprinty usage, but it is not the main driver of patent counts in this specification.</p></li>
-<li><p><strong>Blueprinty Customer:</strong> The coefficient on <code>factor(iscustomer)1</code> is our main estimate of interest. A positive coefficient would suggest customers get more patents even after controlling for age and region.</p></li>
+<li><p><strong>Blueprinty Customer:</strong> This is our main estimate of interest. A positive coefficient suggests Blueprinty customers get more patents even after controlling for age and region.</p></li>
 </ul>
 </section>
 <section id="model-diagnostics-and-goodness-of-fit" class="level3">
@@ -961,6 +961,33 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 </div>
 <p>The residual plot shows relatively balanced scatter around zero, suggesting our Poisson assumption is reasonable. The actual vs.&nbsp;predicted plot confirms the model captures the general trend in patent counts.</p>
 </section>
+<section id="checking-for-overdispersion" class="level3">
+<h3 class="anchored" data-anchor-id="checking-for-overdispersion">Checking for Overdispersion</h3>
+<p>A useful diagnostic for count models is whether the data vary more than a strict Poisson model expects. In a Poisson model, the conditional mean and variance are assumed to be equal. If the variance is much larger than the mean, the coefficient estimates can still be informative, but the standard errors may be too optimistic.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Metric</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Pearson dispersion</td>
+<td style="text-align: left;">1.39</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Interpretation</td>
+<td style="text-align: left;">Mild overdispersion</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The Pearson dispersion estimate is 1.39, which suggests mild extra variation beyond the strict Poisson assumption. That does not overturn the main pattern, but it is a reason to treat the standard errors as approximate. In a production analysis, I would also report quasi-Poisson, negative binomial, or robust-standard-error results.</p>
+</section>
 <section id="coefficient-visualization-forest-plot" class="level3">
 <h3 class="anchored" data-anchor-id="coefficient-visualization-forest-plot">Coefficient Visualization: Forest Plot</h3>
 <p>Visual representation of all coefficients with confidence intervals provides a more intuitive understanding:</p>
@@ -968,7 +995,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="hw3_questions_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="hw3_questions_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -997,7 +1024,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="hw3_questions_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="hw3_questions_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1044,6 +1071,45 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 </div>
 </div>
 </section>
+<section id="a-typical-firm-translation" class="level3">
+<h3 class="anchored" data-anchor-id="a-typical-firm-translation">A Typical-Firm Translation</h3>
+<p>The average treatment effect is useful, but it is easier to understand the result with one concrete counterfactual example. Holding firm age and region fixed, the model asks: what would the same firm be expected to receive as a non-customer versus as a Blueprinty customer?</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 31%">
+<col style="width: 28%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Scenario</th>
+<th style="text-align: right;">Predicted patents over 5 years</th>
+<th style="text-align: left;">Difference vs.&nbsp;non-customer</th>
+<th style="text-align: left;">Lift</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Same firm as a non-customer</td>
+<td style="text-align: right;">3.96</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">–</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Same firm as a Blueprinty customer</td>
+<td style="text-align: right;">4.87</td>
+<td style="text-align: left;">+0.91</td>
+<td style="text-align: left;">23.1%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>For a firm at the sample median age (26 years) in the most common region (Northeast), the model predicts about 0.91 additional patents over five years if the firm is treated as a Blueprinty customer. This turns the regression coefficient into a more business-readable statement.</p>
+</section>
 <section id="confidence-intervals-for-the-treatment-effect" class="level3">
 <h3 class="anchored" data-anchor-id="confidence-intervals-for-the-treatment-effect">Confidence Intervals for the Treatment Effect</h3>
 <p>To quantify uncertainty around the ATE, we can use the bootstrap method or a parametric approach. Here’s a bootstrap-based 95% confidence interval:</p>
@@ -1057,7 +1123,7 @@ L(\beta) = \prod_{i=1}^{n} \frac{e^{-\exp(X_i'\beta)}\left[\exp(X_i'\beta)\right
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="hw3_questions_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="hw3_questions_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1168,6 +1234,11 @@ Interpretation of Robustness Checks:</code></pre>
 <section id="conclusion-what-can-we-claim" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion-what-can-we-claim">Conclusion: What Can We Claim?</h2>
 <p>Our analysis provides evidence <strong>consistent with</strong> Blueprinty’s marketing claim. After controlling for firm age and geographic region, the model suggests that being a Blueprinty customer is associated with approximately <strong>0.79 additional patents</strong> in a 5-year period.</p>
+<section id="what-blueprinty-can-say" class="level3">
+<h3 class="anchored" data-anchor-id="what-blueprinty-can-say">What Blueprinty Can Say</h3>
+<p>A careful and defensible marketing statement would be: <strong>among firms of similar age and region, Blueprinty customers are associated with higher expected patent approvals over five years.</strong> That is a stronger statement than a raw comparison, because it adjusts for observable differences between customers and non-customers.</p>
+<p>The statement I would avoid is: <strong>Blueprinty’s software causes firms to receive more patents.</strong> This dataset is observational, so it supports a strong association, not a clean causal claim.</p>
+</section>
 <section id="important-caveats" class="level3">
 <h3 class="anchored" data-anchor-id="important-caveats">Important Caveats</h3>
 <p>However, we must be very careful about interpreting causality here:</p>
