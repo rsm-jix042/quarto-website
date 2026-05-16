@@ -12,6 +12,7 @@ format:
 ---
 
 ```{r}
+#| include: false
 #| message: false
 #| warning: false
 
@@ -24,9 +25,6 @@ library(glue)
 
 # Read the data
 blueprinty_data <- read.csv("blueprinty.csv")
-
-# Quick look at the data
-head(blueprinty_data)
 ```
 
 ## Introduction
@@ -36,6 +34,7 @@ Blueprinty is a small but ambitious company with a clear value proposition: they
 The marketing team at Blueprinty has an appealing story they'd like to tell: *firms using our software win more patent approvals*. But here's the challenge: proving this claim is surprisingly tricky.
 
 In an ideal world, we'd have data showing each firm's patent success before and after adopting Blueprinty's software. But that data doesn't exist. What we do have is a snapshot of 1,500 mature engineering firms—established companies (not startups)—along with:
+
 - How many patents each firm had approved over the last 5 years
 - The firm's age since incorporation
 - Geographic region
@@ -51,12 +50,26 @@ In this analysis, we'll use **Poisson regression** and **maximum likelihood esti
 Let's start by understanding what we're working with.
 
 ```{r}
+#| echo: false
+
 # Summary statistics
-cat("Dataset size:", nrow(blueprinty_data), "firms\n")
-cat("Patents awarded - Range:", min(blueprinty_data$patents), "to", max(blueprinty_data$patents), "\n")
-cat("Blueprinty customers:", sum(blueprinty_data$iscustomer), "(", 
-    round(100*mean(blueprinty_data$iscustomer), 1), "%)\n")
-cat("Mean firm age:", round(mean(blueprinty_data$age), 1), "years\n")
+overview_table <- data.frame(
+  Metric = c(
+    "Dataset size",
+    "Patent count range",
+    "Blueprinty customers",
+    "Mean firm age"
+  ),
+  Value = c(
+    paste(nrow(blueprinty_data), "firms"),
+    paste(min(blueprinty_data$patents), "to", max(blueprinty_data$patents)),
+    paste0(sum(blueprinty_data$iscustomer), " firms (",
+           round(100 * mean(blueprinty_data$iscustomer), 1), "%)"),
+    paste(round(mean(blueprinty_data$age), 1), "years")
+  )
+)
+
+knitr::kable(overview_table, row.names = FALSE)
 ```
 
 ### Patent Awards by Customer Status
@@ -66,7 +79,7 @@ First, let's compare the raw distribution of patent awards between firms using B
 ```{r}
 #| fig-width: 12
 #| fig-height: 5
-#| echo: true
+#| echo: false
 
 # Calculate summary statistics by group
 summary_stats <- blueprinty_data %>%
@@ -144,6 +157,7 @@ To understand potential selection bias, let's examine whether customers and non-
 ```{r}
 #| fig-width: 12
 #| fig-height: 5
+#| echo: false
 
 # Compare firm ages
 p_age_customer <- blueprinty_data %>%
@@ -232,6 +246,7 @@ These differences matter because age and geography may independently influence p
 ### Why Poisson Regression?
 
 Our outcome variable is a count of patents—a non-negative integer. The Normal distribution is a poor choice here because:
+
 - It allows negative values (patents can't be negative)
 - It assumes continuous variation (patents are discrete)
 - It assumes constant variance (variance typically increases with the mean for counts)
@@ -389,6 +404,7 @@ $$
 Here, $X_i$ is a vector of firm characteristics (including an intercept), and $\beta$ is a vector of coefficients to estimate.
 
 We use the exponential link function $\exp(\cdot)$ because:
+
 - $\lambda_i$ must be positive (you can't have a negative expected count of patents)
 - The linear predictor $X_i'\beta$ can be any real number
 - The exponential transformation maps $(-\infty, \infty) \to (0, \infty)$, keeping $\lambda_i$ in the valid range
@@ -398,6 +414,8 @@ This is a **multiplicative model**: when we increase a covariate by 1 unit, the 
 ### Setting up the Regression Model
 
 ```{r}
+#| include: false
+
 # Construct the design matrix X
 # Columns: intercept, age, age^2, region dummies (dropping one), customer indicator
 
@@ -416,6 +434,7 @@ head(X, 3)
 ```
 
 **Model specification:**
+
 - **Intercept:** Baseline patent rate for a non-customer firm of age 0 in the Midwest
 - **Age:** Linear effect of firm age on patent rate
 - **Age²:** Allows the relationship between age and patenting to be non-linear (firms might innovate more heavily at middle age)
@@ -544,6 +563,8 @@ comparison_tbl
 ### Interpreting the Results
 
 ```{r}
+#| echo: false
+
 # Create an interpretable results summary
 interpret_df <- results_df %>%
   mutate(
@@ -592,6 +613,7 @@ How well does our model fit the data? Let's examine predicted vs. actual patent 
 ```{r}
 #| fig-width: 12
 #| fig-height: 5
+#| echo: false
 
 # Get fitted values from our model
 fitted_lambda <- exp(X %*% beta_mle)
@@ -696,6 +718,8 @@ Because our model is multiplicative (not additive), we can't simply interpret th
 ### Counterfactual Predictions
 
 ```{r}
+#| echo: false
+
 # Create two counterfactual datasets:
 # X0: Every firm as a non-customer (iscustomer = 0)
 # X1: Every firm as a customer (iscustomer = 1)
@@ -779,6 +803,8 @@ grid.arrange(p1, p2, nrow = 1)
 ### Summary of Findings
 
 ```{r}
+#| echo: false
+
 summary_table <- data.frame(
   Statistic = c(
     "Average Treatment Effect",
@@ -808,6 +834,8 @@ summary_table
 To quantify uncertainty around the ATE, we can use the bootstrap method or a parametric approach. Here's a bootstrap-based 95% confidence interval:
 
 ```{r}
+#| echo: false
+
 # Bootstrap confidence interval for ATE
 set.seed(42)
 n_bootstrap <- 1000
@@ -886,6 +914,8 @@ The confidence interval reflects genuine uncertainty about the true treatment ef
 Do our conclusions change if we modify the model specification? Testing robustness is crucial for credibility.
 
 ```{r}
+#| echo: false
+
 # Model 1: Original (full model)
 model_full <- glm(
   patents ~ age + I(age^2) + factor(region) + factor(iscustomer),
